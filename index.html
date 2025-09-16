@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scrollbare Pose Trails</title>
+    <title>Joshua Lieck</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap&v=2');
+        /* Einfach und funktioniert immer */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap');
         
         body { 
             margin: 0; 
             background: #ffffff; 
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             height: 300vh;
         }
         canvas { 
@@ -33,38 +34,22 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer; /* Zeigt, dass es klickbar ist */
+            cursor: pointer;
             transition: transform 0.2s ease;
         }
         .panel:active {
-            transform: scale(0.98); /* Feedback beim Klicken */
+            transform: scale(0.98);
         }
         .panel h1 {
             font-size: 5vw;
-            font-weight: 700;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-weight: 900;
+            font-style: italic;
             margin: 0;
             letter-spacing: 2px;
+            color: #000000;
         }
-        #debug {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            color: #666;
-            font-family: 'Roboto', sans-serif;
-            font-size: 12px;
-            font-weight: 400;
-            background: rgba(255,255,255,0.8);
-            padding: 8px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
-        }
-        
-        #debug:hover {
-            opacity: 1;
-        }
+
         
         .panel:first-of-type {
             height: 100vh;
@@ -79,38 +64,30 @@
         /* Mobile Optimierungen */
         @media (max-width: 768px) {
             .panel h1 {
-                font-size: 8vw; /* Größere Schrift auf Mobile */
+                font-size: 8vw;
             }
             .panel {
                 width: 90vw;
                 height: 50vh;
                 margin: 60px auto;
             }
-            #debug {
-                font-size: 10px;
-                padding: 6px 10px;
-                bottom: 15px;
-                right: 15px;
-            }
         }
     </style>
 </head>
 <body>
-    
-    <div id="debug">Warte auf Pose-Erkennung...</div>
-    
+
     <canvas id="pose-canvas"></canvas>
     <video id="webcam" style="display: none;"></video>
     
-    <div class="panel" style="color: rgb(255, 0, 0);" onclick="openCV()">
+    <div class="panel" onclick="openCV()">
         <h1>JOSHUA LIECK</h1>
     </div>
     
-    <div class="panel" style="color: rgb(0, 255, 0);" onclick="openCV()">
+    <div class="panel" onclick="openCV()">
         <h1>JOSHUA LIECK</h1>
     </div>
     
-    <div class="panel" style="color: rgb(0, 0, 255);" onclick="openCV()">
+    <div class="panel" onclick="openCV()">
         <h1>JOSHUA LIECK</h1>
     </div>
 
@@ -126,9 +103,6 @@
             window.open('CV25.pdf', '_blank');
         }
 
-        // Debug-Element
-        const debugEl = document.getElementById('debug');
-        
         // Canvas Setup
         const canvas = document.getElementById('pose-canvas');
         const ctx = canvas.getContext('2d');
@@ -143,22 +117,31 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
         
-        // Trail-System für verschiedene Körperteile
+        // Trail-System für verschiedene Körperteile mit Rot, Grün, Blau Farben
+        const colors = ['rgb(255, 0, 0)', 'rgb(0, 255, 0)', 'rgb(0, 0, 255)'];
         const poseTrails = {
-            nose: [],
-            leftShoulder: [],
-            rightShoulder: [],
-            leftElbow: [],
-            rightElbow: [],
-            leftWrist: [],
-            rightWrist: [],
-            leftHip: [],
-            rightHip: [],
-            leftKnee: [],
-            rightKnee: [],
-            leftAnkle: [],
-            rightAnkle: []
+            nose: { points: [], color: colors[0] },
+            leftShoulder: { points: [], color: colors[1] },
+            rightShoulder: { points: [], color: colors[2] },
+            leftElbow: { points: [], color: colors[0] },
+            rightElbow: { points: [], color: colors[1] },
+            leftWrist: { points: [], color: colors[2] },
+            rightWrist: { points: [], color: colors[0] },
+            leftHip: { points: [], color: colors[1] },
+            rightHip: { points: [], color: colors[2] },
+            leftKnee: { points: [], color: colors[0] },
+            rightKnee: { points: [], color: colors[1] },
+            leftAnkle: { points: [], color: colors[2] },
+            rightAnkle: { points: [], color: colors[0] }
         };
+        
+        // Funktion für zufällige RGB-Farben
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
         
         // Mobile-optimierte MediaPipe Pose Setup
         const pose = new Pose({
@@ -169,16 +152,14 @@
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
         pose.setOptions({
-            modelComplexity: isMobile ? 0 : 1, // Einfachere Erkennung auf Mobile
+            modelComplexity: isMobile ? 0 : 1,
             smoothLandmarks: true,
-            minDetectionConfidence: isMobile ? 0.7 : 0.5, // Höhere Konfidenz auf Mobile
+            minDetectionConfidence: isMobile ? 0.7 : 0.5,
             minTrackingConfidence: isMobile ? 0.7 : 0.5
         });
         
         pose.onResults((results) => {
             if (results.poseLandmarks) {
-                debugEl.textContent = "Pose erkannt!";
-                
                 const landmarks = results.poseLandmarks;
                 
                 updateTrail('nose', landmarks[0]);
@@ -195,8 +176,6 @@
                 updateTrail('leftAnkle', landmarks[27]);
                 updateTrail('rightAnkle', landmarks[28]);
                 
-            } else {
-                debugEl.textContent = "Keine Pose erkannt";
             }
         });
         
@@ -205,14 +184,14 @@
                 const x = landmark.x * canvas.width;
                 const y = landmark.y * canvas.height;
                 
-                poseTrails[trailName].push({x, y});
+                poseTrails[trailName].points.push({x, y});
                 
-                if (poseTrails[trailName].length > 1) {
-                    const prevPoint = poseTrails[trailName][poseTrails[trailName].length - 2];
-                    const currPoint = poseTrails[trailName][poseTrails[trailName].length - 1];
+                if (poseTrails[trailName].points.length > 1) {
+                    const prevPoint = poseTrails[trailName].points[poseTrails[trailName].points.length - 2];
+                    const currPoint = poseTrails[trailName].points[poseTrails[trailName].points.length - 1];
                     
-                    ctx.strokeStyle = '#000000';
-                    ctx.lineWidth = isMobile ? 2 : 3; // Dünnere Linien auf Mobile
+                    ctx.strokeStyle = poseTrails[trailName].color;
+                    ctx.lineWidth = isMobile ? 2 : 3;
                     ctx.lineCap = 'round';
                     ctx.lineJoin = 'round';
                     
@@ -229,15 +208,13 @@
             onFrame: async () => {
                 await pose.send({image: document.getElementById('webcam')});
             },
-            width: isMobile ? 320 : 640, // Kleinere Auflösung auf Mobile
+            width: isMobile ? 320 : 640,
             height: isMobile ? 240 : 480,
-            fps: isMobile ? 15 : 30 // Reduzierte FPS auf Mobile für bessere Batterie
+            fps: isMobile ? 15 : 30
         });
         
-        webcam.start().then(() => {
-            debugEl.textContent = "Webcam aktiviert - Warte auf Pose...";
-        }).catch(err => {
-            debugEl.textContent = "Webcam-Fehler: " + err.message;
+        webcam.start().catch(err => {
+            console.error("Webcam-Fehler:", err.message);
         });
         
         // Canvas leeren mit 'c' Taste
@@ -247,10 +224,8 @@
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
                 for (const trailName in poseTrails) {
-                    poseTrails[trailName] = [];
+                    poseTrails[trailName].points = [];
                 }
-                
-                debugEl.textContent = "Canvas geleert (C-Taste)";
             }
         });
         
@@ -268,10 +243,10 @@
             
             for (const trailName in poseTrails) {
                 const trail = poseTrails[trailName];
-                if (trail.length > 0) {
-                    const lastPoint = trail[trail.length - 1];
+                if (trail.points.length > 0) {
+                    const lastPoint = trail.points[trail.points.length - 1];
                     
-                    ctx.strokeStyle = '#000000';
+                    ctx.strokeStyle = trail.color;
                     ctx.lineWidth = isMobile ? 2 : 3;
                     ctx.lineCap = 'round';
                     
@@ -298,10 +273,9 @@
             
             setTimeout(() => {
                 isScrolling = false;
-            }, isMobile ? 50 : 16); // Langsamere Updates auf Mobile
+            }, isMobile ? 50 : 16);
         }
         
-        // Scroll-Event mit Throttling für Mobile
         window.addEventListener('scroll', handleScroll, { passive: true });
         
         // Touch-Events für Mobile
@@ -319,7 +293,6 @@
                 const touchEndTime = Date.now();
                 const touchDuration = touchEndTime - touchStartTime;
                 
-                // Schneller Tap öffnet CV
                 if (touchDuration < 300 && Math.abs(touchEndY - touchStartY) < 10) {
                     const clickedElement = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
                     if (clickedElement && clickedElement.closest('.panel')) {
@@ -356,7 +329,7 @@
             const panel = document.createElement('div');
             panel.className = 'panel';
             panel.style.color = randomColor();
-            panel.onclick = openCV; // Alle neuen Panels sind auch klickbar
+            panel.onclick = openCV;
             const h1 = document.createElement('h1');
             h1.textContent = 'JOSHUA LIECK';
             panel.appendChild(h1);
