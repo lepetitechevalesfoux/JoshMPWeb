@@ -79,15 +79,15 @@
     <canvas id="pose-canvas"></canvas>
     <video id="webcam" style="display: none;"></video>
     
-    <div class="panel" onclick="openCV()">
+    <div class="panel" onclick="openBio()">
         <h1>JOSHUA LIECK</h1>
     </div>
     
-    <div class="panel" onclick="openCV()">
+    <div class="panel" onclick="openBio()">
         <h1>JOSHUA LIECK</h1>
     </div>
     
-    <div class="panel" onclick="openCV()">
+    <div class="panel" onclick="openBio()">
         <h1>JOSHUA LIECK</h1>
     </div>
 
@@ -98,9 +98,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 
     <script>
-        // CV öffnen Funktion
-        function openCV() {
-            window.open('CV25.pdf', '_blank');
+        // Bio3 öffnen Funktion
+        function openBio() {
+            window.location.href = 'bio3.html';
         }
 
         // Canvas Setup
@@ -296,7 +296,7 @@
                 if (touchDuration < 300 && Math.abs(touchEndY - touchStartY) < 10) {
                     const clickedElement = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
                     if (clickedElement && clickedElement.closest('.panel')) {
-                        openCV();
+                        openBio();
                     }
                 }
             }, { passive: true });
@@ -329,10 +329,14 @@
             const panel = document.createElement('div');
             panel.className = 'panel';
             panel.style.color = randomColor();
-            panel.onclick = openCV;
+            
+            // Alle Panels führen zur Bio
+            panel.onclick = openBio;
+            
             const h1 = document.createElement('h1');
             h1.textContent = 'JOSHUA LIECK';
             panel.appendChild(h1);
+            
             return panel;
         }
 
