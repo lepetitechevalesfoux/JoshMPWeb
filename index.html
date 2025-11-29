@@ -6,157 +6,60 @@
     <title>Joshua Lieck</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #ffffff;
-            --text: #1a1a1a;
-            --text-light: #7a7a7a;
-            --border: #e8e8e8;
-        }
-
-        [data-theme="dark"] {
-            --bg: #0a0a0a;
-            --text: #f5f5f5;
-            --text-light: #9a9a9a;
-            --border: #2a2a2a;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
             font-family: 'Epilogue', -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            font-weight: 300;
-            font-size: 16px;
-            transition: background-color 0.4s ease, color 0.4s ease;
+            background: #ffffff;
+            color: #000000;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 80px;
         }
 
         /* Header */
         header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: var(--bg);
-            padding: 2.5rem 4rem;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.4s ease;
+            margin-bottom: 120px;
         }
 
         .name {
-            font-size: 0.95rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
+            font-size: 16px;
         }
 
-        .header-right {
-            display: flex;
-            gap: 2.5rem;
-            align-items: center;
-        }
-
-        nav {
-            display: flex;
-            gap: 2.5rem;
-        }
-
-        nav a {
-            color: var(--text);
+        .contact a {
+            color: #000000;
             text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 300;
-            transition: color 0.3s;
+            font-size: 16px;
+            margin-left: 40px;
         }
 
-        nav a:hover {
-            color: var(--text-light);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text);
-            cursor: pointer;
-            font-size: 1.1rem;
-            padding: 0;
-            transition: opacity 0.3s;
-        }
-
-        .theme-toggle:hover {
-            opacity: 0.6;
-        }
-
-        /* Main Content */
-        main {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 4rem;
-        }
-
-        /* Hero */
-        .hero {
-            padding: 16rem 0 10rem;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 400;
-            line-height: 1.2;
-            margin-bottom: 2.5rem;
-            letter-spacing: -0.5px;
-        }
-
-        .hero p {
-            font-size: 1.15rem;
-            color: var(--text-light);
-            line-height: 1.8;
-            max-width: 600px;
-        }
-
-        /* Section */
-        section {
-            margin-bottom: 14rem;
-        }
-
-        .section-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-light);
-            margin-bottom: 4rem;
-            font-weight: 400;
+        .contact a:hover {
+            text-decoration: underline;
         }
 
         /* Projects */
         .project {
-            margin-bottom: 8rem;
+            margin-bottom: 100px;
         }
 
         .project-image {
             width: 100%;
-            height: 500px;
+            height: 600px;
             background: #f5f5f5;
-            margin-bottom: 2rem;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        [data-theme="dark"] .project-image {
-            background: #1a1a1a;
+            margin-bottom: 20px;
         }
 
         .project-image img {
@@ -165,385 +68,84 @@
             object-fit: cover;
         }
 
-        .project-info {
-            display: flex;
-            justify-content: space-between;
-            gap: 4rem;
-        }
-
         .project-title {
-            flex: 1;
-        }
-
-        .project-title h3 {
-            font-size: 1.5rem;
-            font-weight: 400;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.3px;
-        }
-
-        .project-title p {
-            font-size: 0.95rem;
-            color: var(--text-light);
-            line-height: 1.6;
-        }
-
-        .project-meta {
-            flex: 0 0 200px;
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        .project-meta div {
-            margin-bottom: 1.5rem;
-        }
-
-        .project-meta strong {
-            display: block;
-            color: var(--text);
-            font-weight: 400;
-            margin-bottom: 0.4rem;
-        }
-
-        /* About */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6rem;
-            margin-top: 4rem;
-        }
-
-        .about-text p {
-            font-size: 1rem;
-            line-height: 1.9;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-        }
-
-        .info-list {
-            font-size: 0.95rem;
-        }
-
-        .info-list div {
-            margin-bottom: 2rem;
-        }
-
-        .info-list strong {
-            display: block;
-            color: var(--text);
-            font-weight: 400;
-            margin-bottom: 0.75rem;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .info-list p {
-            color: var(--text-light);
-            line-height: 1.8;
-        }
-
-        /* Contact */
-        .contact-links {
-            margin-top: 4rem;
-            font-size: 1.1rem;
-        }
-
-        .contact-links a {
-            display: inline-block;
-            color: var(--text);
-            text-decoration: none;
-            margin-right: 3rem;
-            margin-bottom: 1.5rem;
-            transition: color 0.3s;
-        }
-
-        .contact-links a:hover {
-            color: var(--text-light);
-        }
-
-        /* Footer */
-        footer {
-            padding: 6rem 4rem 4rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-light);
+            font-size: 16px;
         }
 
         /* Mobile */
         @media (max-width: 768px) {
+            .container {
+                padding: 40px 30px;
+            }
+
             header {
-                padding: 2rem 2rem;
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 1.5rem;
+                gap: 20px;
+                margin-bottom: 80px;
             }
 
-            .header-right {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            nav {
-                gap: 1.5rem;
-            }
-
-            main {
-                padding: 0 2rem;
-            }
-
-            .hero {
-                padding: 12rem 0 6rem;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            section {
-                margin-bottom: 8rem;
-            }
-
-            .project {
-                margin-bottom: 6rem;
+            .contact a {
+                margin-left: 0;
+                margin-right: 20px;
             }
 
             .project-image {
-                height: 300px;
-            }
-
-            .project-info {
-                flex-direction: column;
-                gap: 2rem;
-            }
-
-            .project-meta {
-                flex: 1;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-
-            footer {
-                padding: 4rem 2rem 3rem;
+                height: 400px;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="name">Joshua Lieck</div>
-        <div class="header-right">
-            <nav>
-                <a href="#work">Work</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-            </nav>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">◐</button>
-        </div>
-    </header>
-
-    <main>
-        <!-- Hero -->
-        <section class="hero">
-            <h1>3D Artist & Motion Designer</h1>
-            <p>Visual artist specializing in 3D production, motion design, and emerging technologies. Experience ranges from commercial campaigns for automotive clients to interactive VR installations.</p>
-        </section>
-
-        <!-- Work -->
-        <section id="work">
-            <div class="section-label">Selected Work</div>
-
-            <!-- Project 01 -->
-            <div class="project">
-                <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">KÖGEL</div>
-                </div>
-                <div class="project-info">
-                    <div class="project-title">
-                        <h3>Kögel Trailer Campaign</h3>
-                        <p>Transformation of technical CAD data into photorealistic 3D product visualizations for trade shows, digital advertising, and marketing campaigns.</p>
-                    </div>
-                    <div class="project-meta">
-                        <div>
-                            <strong>Role</strong>
-                            3D Artist & Visualization Pipeline
-                        </div>
-                        <div>
-                            <strong>Year</strong>
-                            2024/25
-                        </div>
-                        <div>
-                            <strong>Tools</strong>
-                            Blender, Adobe CC, Midjourney
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 02 -->
-            <div class="project">
-                <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">CLOTH</div>
-                </div>
-                <div class="project-info">
-                    <div class="project-title">
-                        <h3>Cloth Studie</h3>
-                        <p>CGI exploration of cloth simulation and atmospheric staging. Personal project combining 3D modeling with cloth physics to create atmospheric visual moments.</p>
-                    </div>
-                    <div class="project-meta">
-                        <div>
-                            <strong>Role</strong>
-                            Concept, 3D Simulation, Rendering
-                        </div>
-                        <div>
-                            <strong>Year</strong>
-                            2024
-                        </div>
-                        <div>
-                            <strong>Tools</strong>
-                            Blender, After Effects
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 03 -->
-            <div class="project">
-                <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">VR</div>
-                </div>
-                <div class="project-info">
-                    <div class="project-title">
-                        <h3>VR Garden</h3>
-                        <p>VR interpretation of Bosch's triptych created with Tilt Brush. Fantastical creatures and surreal architecture translated into an immersive, spatial experience.</p>
-                    </div>
-                    <div class="project-meta">
-                        <div>
-                            <strong>Role</strong>
-                            Concept, 3D VR Modeling
-                        </div>
-                        <div>
-                            <strong>Year</strong>
-                            2023
-                        </div>
-                        <div>
-                            <strong>Tools</strong>
-                            Google VR Tilt Brush
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 04 -->
-            <div class="project">
-                <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">AC SCHNITZER</div>
-                </div>
-                <div class="project-info">
-                    <div class="project-title">
-                        <h3>AC Schnitzer AI Pipeline</h3>
-                        <p>AI-assisted product photography enhancement. Transforming generic studio shots into premium automotive hero visuals through environment generation and seamless compositing.</p>
-                    </div>
-                    <div class="project-meta">
-                        <div>
-                            <strong>Role</strong>
-                            Lead Designer & Pipeline Development
-                        </div>
-                        <div>
-                            <strong>Year</strong>
-                            2024
-                        </div>
-                        <div>
-                            <strong>Tools</strong>
-                            Photoshop, Midjourney, MagnificAI
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project 05 -->
-            <div class="project">
-                <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">MOTION</div>
-                </div>
-                <div class="project-info">
-                    <div class="project-title">
-                        <h3>Movement as Interface</h3>
-                        <p>Modular installation rendering human movement as digital particle clouds in realtime. Open-source motion-tracking pipeline using MediaPipe and Blender.</p>
-                    </div>
-                    <div class="project-meta">
-                        <div>
-                            <strong>Role</strong>
-                            Concept, Development, Optimization
-                        </div>
-                        <div>
-                            <strong>Year</strong>
-                            2024
-                        </div>
-                        <div>
-                            <strong>Tools</strong>
-                            Python, MediaPipe, Blender
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- About -->
-        <section id="about">
-            <div class="section-label">About</div>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>I'm a visual artist based in Germany, specializing in 3D production, motion design, and emerging technologies. My work bridges technical workflows with creative execution.</p>
-                    <p>Experience ranges from commercial campaigns for automotive clients like AC Schnitzer and Kögel to experimental VR installations and real-time tracking systems.</p>
-                </div>
-                <div class="info-list">
-                    <div>
-                        <strong>Tools</strong>
-                        <p>Blender, Adobe Creative Cloud, Midjourney, Python, MediaPipe, Tilt Brush</p>
-                    </div>
-                    <div>
-                        <strong>Skills</strong>
-                        <p>3D Modeling & Rendering, Motion Design, CAD Processing, AI-Assisted Workflows, Real-time Systems, VR Development</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact -->
-        <section id="contact">
-            <div class="section-label">Get in Touch</div>
-            <div class="contact-links">
+    <div class="container">
+        <header>
+            <div class="name">Joshua Lieck</div>
+            <div class="contact">
                 <a href="mailto:joshua.lieck@gmail.com">joshua.lieck@gmail.com</a>
                 <a href="tel:+4915254596094">+49 152 54596094</a>
             </div>
-        </section>
-    </main>
+        </header>
 
-    <footer>
-        <p>© 2025 Joshua Lieck</p>
-    </footer>
+        <div class="project">
+            <div class="project-image">
+                <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; letter-spacing: 2px;">KÖGEL</div>
+            </div>
+            <div class="project-title">Kögel Trailer Campaign</div>
+        </div>
 
-    <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
+        <div class="project">
+            <div class="project-image">
+                <div style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; letter-spacing: 2px;">CLOTH</div>
+            </div>
+            <div class="project-title">Cloth Studie</div>
+        </div>
 
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        html.setAttribute('data-theme', currentTheme);
+        <div class="project">
+            <div class="project-image">
+                <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; letter-spacing: 2px;">VR</div>
+            </div>
+            <div class="project-title">VR Garden</div>
+        </div>
 
-        themeToggle.addEventListener('click', () => {
-            const theme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-        });
-    </script>
+        <div class="project">
+            <div class="project-image">
+                <div style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; letter-spacing: 2px;">GOTTFRIED SCHULTZ</div>
+            </div>
+            <div class="project-title">Gottfried Schultz Motion Design</div>
+        </div>
+
+        <div class="project">
+            <div class="project-image">
+                <div style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; letter-spacing: 2px;">AC SCHNITZER</div>
+            </div>
+            <div class="project-title">AC Schnitzer AI Pipeline</div>
+        </div>
+
+        <div class="project">
+            <div class="project-image">
+                <div style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; letter-spacing: 2px;">MOTION</div>
+            </div>
+            <div class="project-title">Movement as Interface</div>
+        </div>
+    </div>
 </body>
 </html>
