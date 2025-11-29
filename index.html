@@ -3,27 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joshua Lieck — 3D Artist & Motion Designer</title>
+    <title>Joshua Lieck</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #f8f8f8;
-            --bg-secondary: #ffffff;
-            --text-primary: #000000;
-            --text-secondary: #666666;
-            --border-color: #e0e0e0;
-            --accent: #000000;
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --text-light: #7a7a7a;
+            --border: #e8e8e8;
         }
 
         [data-theme="dark"] {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #1a1a1a;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --border-color: #2a2a2a;
-            --accent: #ffffff;
+            --bg: #0a0a0a;
+            --text: #f5f5f5;
+            --text-light: #9a9a9a;
+            --border: #2a2a2a;
         }
 
         * {
@@ -32,168 +28,135 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Epilogue', system-ui, -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.8;
-            font-weight: 400;
-            transition: background-color 0.3s ease, color 0.3s ease;
+        html {
+            scroll-behavior: smooth;
         }
 
-        /* Header Navigation */
+        body {
+            font-family: 'Epilogue', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            font-weight: 300;
+            font-size: 16px;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* Header */
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1000;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            padding: 2rem 3rem;
+            z-index: 100;
+            background: var(--bg);
+            padding: 2.5rem 4rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.4s ease;
         }
 
-        .logo {
-            font-weight: 500;
-            font-size: 1rem;
+        .name {
+            font-size: 0.95rem;
+            font-weight: 400;
             letter-spacing: 0.5px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
         }
 
         nav {
             display: flex;
-            gap: 3rem;
-            align-items: center;
+            gap: 2.5rem;
         }
 
         nav a {
-            color: var(--text-primary);
+            color: var(--text);
             text-decoration: none;
-            font-weight: 400;
             font-size: 0.95rem;
-            transition: opacity 0.2s;
+            font-weight: 300;
+            transition: color 0.3s;
         }
 
         nav a:hover {
-            opacity: 0.5;
+            color: var(--text-light);
         }
 
-        .controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .toggle-btn {
+        .theme-toggle {
             background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            border: none;
+            color: var(--text);
             cursor: pointer;
-            font-family: 'Epilogue', sans-serif;
-            font-weight: 400;
-            font-size: 0.85rem;
-            transition: all 0.2s;
+            font-size: 1.1rem;
+            padding: 0;
+            transition: opacity 0.3s;
         }
 
-        .toggle-btn:hover {
-            background: var(--bg-secondary);
+        .theme-toggle:hover {
+            opacity: 0.6;
         }
 
-        /* Hero Section */
+        /* Main Content */
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 4rem;
+        }
+
+        /* Hero */
         .hero {
-            margin-top: 100px;
-            padding: 12rem 3rem 8rem;
-            text-align: center;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
+            padding: 16rem 0 10rem;
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 10vw, 6rem);
-            font-weight: 500;
-            font-style: italic;
-            letter-spacing: -1px;
-            line-height: 1;
-            margin-bottom: 3rem;
-        }
-
-        .hero .subtitle {
-            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-size: 3.5rem;
             font-weight: 400;
-            color: var(--text-secondary);
-            margin-bottom: 5rem;
+            line-height: 1.2;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-light);
             line-height: 1.8;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 600px;
         }
 
-        .barcode {
-            width: 150px;
-            height: 40px;
-            background:
-                repeating-linear-gradient(
-                    90deg,
-                    var(--text-primary) 0px,
-                    var(--text-primary) 2px,
-                    transparent 2px,
-                    transparent 6px
-                );
-            margin: 0 auto;
-            opacity: 0.5;
-        }
-
-        /* Content Container */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 3rem;
-        }
-
+        /* Section */
         section {
-            margin-bottom: 12rem;
+            margin-bottom: 14rem;
         }
 
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 5rem;
-            letter-spacing: 0;
+        .section-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-light);
+            margin-bottom: 4rem;
+            font-weight: 400;
         }
 
-        /* Projects Grid */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 5rem 4rem;
-        }
-
-        .project-card {
-            background: transparent;
-            border: none;
-            overflow: hidden;
-            transition: transform 0.3s;
-            cursor: pointer;
-        }
-
-        .project-card:hover {
-            transform: translateY(-8px);
+        /* Projects */
+        .project {
+            margin-bottom: 8rem;
         }
 
         .project-image {
             width: 100%;
-            height: 300px;
-            background: var(--border-color);
-            position: relative;
-            overflow: hidden;
+            height: 500px;
+            background: #f5f5f5;
             margin-bottom: 2rem;
-            border-radius: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .project-image {
+            background: #1a1a1a;
         }
 
         .project-image img {
@@ -202,190 +165,164 @@
             object-fit: cover;
         }
 
-        .project-content {
-            padding: 0;
-        }
-
-        .project-number {
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-            margin-bottom: 0.75rem;
-            letter-spacing: 1px;
+        .project-info {
+            display: flex;
+            justify-content: space-between;
+            gap: 4rem;
         }
 
         .project-title {
-            font-size: 1.25rem;
-            font-weight: 500;
-            margin-bottom: 0.75rem;
-            letter-spacing: 0;
+            flex: 1;
         }
 
-        .project-subtitle {
+        .project-title h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.3px;
+        }
+
+        .project-title p {
             font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
+            color: var(--text-light);
             line-height: 1.6;
         }
 
-        .project-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
+        .project-meta {
+            flex: 0 0 200px;
+            font-size: 0.85rem;
+            color: var(--text-light);
         }
 
-        .tag {
-            font-size: 0.75rem;
-            padding: 0.35rem 0.85rem;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
+        .project-meta div {
+            margin-bottom: 1.5rem;
+        }
+
+        .project-meta strong {
+            display: block;
+            color: var(--text);
             font-weight: 400;
+            margin-bottom: 0.4rem;
         }
 
-        /* About Section */
+        /* About */
         .about-content {
             display: grid;
-            grid-template-columns: 1fr 2fr;
+            grid-template-columns: 1fr 1fr;
             gap: 6rem;
-            align-items: start;
-        }
-
-        .about-image {
-            width: 100%;
-            aspect-ratio: 3/4;
-            background: var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .about-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .about-text h2 {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 2rem;
-            letter-spacing: 0;
+            margin-top: 4rem;
         }
 
         .about-text p {
             font-size: 1rem;
-            line-height: 2;
-            margin-bottom: 3rem;
-            color: var(--text-secondary);
+            line-height: 1.9;
+            color: var(--text-light);
+            margin-bottom: 2rem;
         }
 
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 4rem;
-            margin-top: 4rem;
-        }
-
-        .skill-category h3 {
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        .skill-category ul {
-            list-style: none;
-        }
-
-        .skill-category li {
+        .info-list {
             font-size: 0.95rem;
-            color: var(--text-secondary);
+        }
+
+        .info-list div {
+            margin-bottom: 2rem;
+        }
+
+        .info-list strong {
+            display: block;
+            color: var(--text);
+            font-weight: 400;
             margin-bottom: 0.75rem;
-            font-weight: 400;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Contact Section */
-        .contact-info {
-            text-align: center;
-            padding: 6rem 0;
+        .info-list p {
+            color: var(--text-light);
+            line-height: 1.8;
         }
 
-        .contact-info h2 {
-            font-size: 2rem;
-            font-weight: 500;
-            margin-bottom: 3rem;
-            letter-spacing: 0;
-        }
-
+        /* Contact */
         .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
-        }
-
-        .contact-link {
+            margin-top: 4rem;
             font-size: 1.1rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 400;
-            transition: opacity 0.2s;
         }
 
-        .contact-link:hover {
-            opacity: 0.5;
+        .contact-links a {
+            display: inline-block;
+            color: var(--text);
+            text-decoration: none;
+            margin-right: 3rem;
+            margin-bottom: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .contact-links a:hover {
+            color: var(--text-light);
         }
 
         /* Footer */
         footer {
-            border-top: 1px solid var(--border-color);
-            padding: 3rem;
+            padding: 6rem 4rem 4rem;
             text-align: center;
-            color: var(--text-secondary);
             font-size: 0.85rem;
-            font-weight: 400;
+            color: var(--text-light);
         }
 
-        /* Mobile Responsive */
+        /* Mobile */
         @media (max-width: 768px) {
             header {
-                padding: 1.5rem;
-                flex-wrap: wrap;
+                padding: 2rem 2rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
             }
 
             nav {
-                gap: 2rem;
-                font-size: 0.9rem;
+                gap: 1.5rem;
             }
 
-            .controls {
-                width: 100%;
-                justify-content: center;
-                margin-top: 1.5rem;
-            }
-
-            .hero {
-                padding: 8rem 2rem 4rem;
-            }
-
-            .container {
+            main {
                 padding: 0 2rem;
             }
 
-            .section-title {
-                font-size: 1.25rem;
-                margin-bottom: 3rem;
+            .hero {
+                padding: 12rem 0 6rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
             }
 
             section {
                 margin-bottom: 8rem;
             }
 
-            .projects-grid {
-                grid-template-columns: 1fr;
-                gap: 4rem;
+            .project {
+                margin-bottom: 6rem;
+            }
+
+            .project-image {
+                height: 300px;
+            }
+
+            .project-info {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .project-meta {
+                flex: 1;
             }
 
             .about-content {
@@ -393,208 +330,205 @@
                 gap: 3rem;
             }
 
-            .skills-grid {
-                grid-template-columns: 1fr;
-                gap: 3rem;
+            footer {
+                padding: 4rem 2rem 3rem;
             }
-        }
-
-        /* Smooth Scroll */
-        html {
-            scroll-behavior: smooth;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
-        <div class="logo" data-en="JOSHUA LIECK" data-de="JOSHUA LIECK">JOSHUA LIECK</div>
-        <nav>
-            <a href="#work" data-en="Work" data-de="Arbeiten">Work</a>
-            <a href="#about" data-en="About" data-de="Über mich">About</a>
-            <a href="#contact" data-en="Contact" data-de="Kontakt">Contact</a>
-            <a href="playground.html" data-en="Playground" data-de="Playground">Playground</a>
-        </nav>
-        <div class="controls">
-            <button class="toggle-btn" id="themeToggle">◐</button>
-            <button class="toggle-btn" id="langToggle">DE</button>
+        <div class="name">Joshua Lieck</div>
+        <div class="header-right">
+            <nav>
+                <a href="#work">Work</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">◐</button>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <div class="hero">
-        <h1 data-en="3D ARTIST" data-de="3D ARTIST">3D ARTIST</h1>
-        <p class="subtitle" data-en="Visual artist specializing in 3D production, motion design, and emerging technologies." data-de="Visueller Künstler mit Spezialisierung auf 3D-Produktion, Motion Design und neue Technologien.">
-            Visual artist specializing in 3D production, motion design, and emerging technologies.
-        </p>
-        <div class="barcode"></div>
-    </div>
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <h1>3D Artist & Motion Designer</h1>
+            <p>Visual artist specializing in 3D production, motion design, and emerging technologies. Experience ranges from commercial campaigns for automotive clients to interactive VR installations.</p>
+        </section>
 
-    <!-- Featured Projects -->
-    <section id="work" class="container">
-        <h2 class="section-title" data-en="Featured Work" data-de="Ausgewählte Arbeiten">Featured Work</h2>
-        <div class="projects-grid">
-            <!-- Project 01: Koegel -->
-            <div class="project-card" onclick="window.location.href='#koegel'">
+        <!-- Work -->
+        <section id="work">
+            <div class="section-label">Selected Work</div>
+
+            <!-- Project 01 -->
+            <div class="project">
                 <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 2rem;">KÖGEL</div>
+                    <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">KÖGEL</div>
                 </div>
-                <div class="project-content">
-                    <div class="project-number">PROJECT 01</div>
-                    <h3 class="project-title">KOEGEL TRAILER</h3>
-                    <p class="project-subtitle" data-en="Campaign for Koegel Trailers" data-de="Kampagne für Kögel Auflieger">Campaign for Koegel Trailers</p>
-                    <div class="project-tags">
-                        <span class="tag">3D Visualization</span>
-                        <span class="tag">CAD Processing</span>
-                        <span class="tag">Blender</span>
+                <div class="project-info">
+                    <div class="project-title">
+                        <h3>Kögel Trailer Campaign</h3>
+                        <p>Transformation of technical CAD data into photorealistic 3D product visualizations for trade shows, digital advertising, and marketing campaigns.</p>
+                    </div>
+                    <div class="project-meta">
+                        <div>
+                            <strong>Role</strong>
+                            3D Artist & Visualization Pipeline
+                        </div>
+                        <div>
+                            <strong>Year</strong>
+                            2024/25
+                        </div>
+                        <div>
+                            <strong>Tools</strong>
+                            Blender, Adobe CC, Midjourney
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Project 02: Cloth Studie -->
-            <div class="project-card" onclick="window.location.href='#cloth'">
+            <!-- Project 02 -->
+            <div class="project">
                 <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 2rem;">CLOTH</div>
+                    <div style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">CLOTH</div>
                 </div>
-                <div class="project-content">
-                    <div class="project-number">PROJECT 02</div>
-                    <h3 class="project-title">CL0TH STUD1E</h3>
-                    <p class="project-subtitle" data-en="CGI exploration of cloth simulation" data-de="CGI-Exploration von Stoffsimulation">CGI exploration of cloth simulation</p>
-                    <div class="project-tags">
-                        <span class="tag">Simulation</span>
-                        <span class="tag">Blender</span>
-                        <span class="tag">After Effects</span>
+                <div class="project-info">
+                    <div class="project-title">
+                        <h3>Cloth Studie</h3>
+                        <p>CGI exploration of cloth simulation and atmospheric staging. Personal project combining 3D modeling with cloth physics to create atmospheric visual moments.</p>
+                    </div>
+                    <div class="project-meta">
+                        <div>
+                            <strong>Role</strong>
+                            Concept, 3D Simulation, Rendering
+                        </div>
+                        <div>
+                            <strong>Year</strong>
+                            2024
+                        </div>
+                        <div>
+                            <strong>Tools</strong>
+                            Blender, After Effects
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Project 03: VR Garden -->
-            <div class="project-card" onclick="window.location.href='#vr'">
+            <!-- Project 03 -->
+            <div class="project">
                 <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 2rem;">VR</div>
+                    <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">VR</div>
                 </div>
-                <div class="project-content">
-                    <div class="project-number">PROJECT 03</div>
-                    <h3 class="project-title">VR GARDEN</h3>
-                    <p class="project-subtitle" data-en="Bosch's Garden of Earthly Delights in VR" data-de="Boschs Garten der Lüste in VR">Bosch's Garden of Earthly Delights in VR</p>
-                    <div class="project-tags">
-                        <span class="tag">VR</span>
-                        <span class="tag">Tilt Brush</span>
-                        <span class="tag">Installation</span>
+                <div class="project-info">
+                    <div class="project-title">
+                        <h3>VR Garden</h3>
+                        <p>VR interpretation of Bosch's triptych created with Tilt Brush. Fantastical creatures and surreal architecture translated into an immersive, spatial experience.</p>
+                    </div>
+                    <div class="project-meta">
+                        <div>
+                            <strong>Role</strong>
+                            Concept, 3D VR Modeling
+                        </div>
+                        <div>
+                            <strong>Year</strong>
+                            2023
+                        </div>
+                        <div>
+                            <strong>Tools</strong>
+                            Google VR Tilt Brush
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Project 04: Gottfried Schultz -->
-            <div class="project-card" onclick="window.location.href='#gs'">
+            <!-- Project 04 -->
+            <div class="project">
                 <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.5rem;">GS</div>
+                    <div style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">AC SCHNITZER</div>
                 </div>
-                <div class="project-content">
-                    <div class="project-number">PROJECT 04</div>
-                    <h3 class="project-title">GOTTFRIED SCHULTZ</h3>
-                    <p class="project-subtitle" data-en="Motion Design & Social Media Content" data-de="Motion Design & Social Media Content">Motion Design & Social Media Content</p>
-                    <div class="project-tags">
-                        <span class="tag">Motion Design</span>
-                        <span class="tag">After Effects</span>
-                        <span class="tag">Midjourney</span>
+                <div class="project-info">
+                    <div class="project-title">
+                        <h3>AC Schnitzer AI Pipeline</h3>
+                        <p>AI-assisted product photography enhancement. Transforming generic studio shots into premium automotive hero visuals through environment generation and seamless compositing.</p>
+                    </div>
+                    <div class="project-meta">
+                        <div>
+                            <strong>Role</strong>
+                            Lead Designer & Pipeline Development
+                        </div>
+                        <div>
+                            <strong>Year</strong>
+                            2024
+                        </div>
+                        <div>
+                            <strong>Tools</strong>
+                            Photoshop, Midjourney, MagnificAI
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Project 05: AC Schnitzer -->
-            <div class="project-card" onclick="window.location.href='#ac'">
+            <!-- Project 05 -->
+            <div class="project">
                 <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.5rem;">AC</div>
+                    <div style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 400; font-size: 2rem; letter-spacing: 2px;">MOTION</div>
                 </div>
-                <div class="project-content">
-                    <div class="project-number">PROJECT 05</div>
-                    <h3 class="project-title">AC SCHNITZER</h3>
-                    <p class="project-subtitle" data-en="AI Production Pipeline" data-de="KI-Produktionspipeline">AI Production Pipeline</p>
-                    <div class="project-tags">
-                        <span class="tag">AI Pipeline</span>
-                        <span class="tag">Photoshop</span>
-                        <span class="tag">Midjourney</span>
+                <div class="project-info">
+                    <div class="project-title">
+                        <h3>Movement as Interface</h3>
+                        <p>Modular installation rendering human movement as digital particle clouds in realtime. Open-source motion-tracking pipeline using MediaPipe and Blender.</p>
+                    </div>
+                    <div class="project-meta">
+                        <div>
+                            <strong>Role</strong>
+                            Concept, Development, Optimization
+                        </div>
+                        <div>
+                            <strong>Year</strong>
+                            2024
+                        </div>
+                        <div>
+                            <strong>Tools</strong>
+                            Python, MediaPipe, Blender
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Project 06: Movement as Interface -->
-            <div class="project-card" onclick="window.location.href='playground.html'">
-                <div class="project-image">
-                    <div style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.3rem;">MOTION</div>
+        <!-- About -->
+        <section id="about">
+            <div class="section-label">About</div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>I'm a visual artist based in Germany, specializing in 3D production, motion design, and emerging technologies. My work bridges technical workflows with creative execution.</p>
+                    <p>Experience ranges from commercial campaigns for automotive clients like AC Schnitzer and Kögel to experimental VR installations and real-time tracking systems.</p>
                 </div>
-                <div class="project-content">
-                    <div class="project-number">PROJECT 06</div>
-                    <h3 class="project-title">MOVEMENT AS INTERFACE</h3>
-                    <p class="project-subtitle" data-en="Open-source motion-tracking pipeline" data-de="Open-Source Motion-Tracking-Pipeline">Open-source motion-tracking pipeline</p>
-                    <div class="project-tags">
-                        <span class="tag">Python</span>
-                        <span class="tag">MediaPipe</span>
-                        <span class="tag">Real-time</span>
+                <div class="info-list">
+                    <div>
+                        <strong>Tools</strong>
+                        <p>Blender, Adobe Creative Cloud, Midjourney, Python, MediaPipe, Tilt Brush</p>
+                    </div>
+                    <div>
+                        <strong>Skills</strong>
+                        <p>3D Modeling & Rendering, Motion Design, CAD Processing, AI-Assisted Workflows, Real-time Systems, VR Development</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- About Section -->
-    <section id="about" class="container">
-        <div class="about-content">
-            <div class="about-image">
-                <div style="background: #d1d5db; height: 100%; display: flex; align-items: center; justify-content: center; color: #6b7280; font-weight: 700;">
-                    PHOTO
-                </div>
-            </div>
-            <div class="about-text">
-                <h2 data-en="ABOUT JOSHUA LIECK" data-de="ÜBER JOSHUA LIECK">ABOUT JOSHUA LIECK</h2>
-                <p data-en="Visual artist specializing in 3D production, motion design, and emerging technologies. Experience ranges from commercial campaigns for automotive clients to interactive VR installations. I bridge technical workflows with creative execution." data-de="Visueller Künstler mit Spezialisierung auf 3D-Produktion, Motion Design und neue Technologien. Erfahrung reicht von kommerziellen Kampagnen für Automobilkunden bis zu interaktiven VR-Installationen. Ich verbinde technische Workflows mit kreativer Umsetzung.">
-                    Visual artist specializing in 3D production, motion design, and emerging technologies.
-                    Experience ranges from commercial campaigns for automotive clients to interactive VR
-                    installations. I bridge technical workflows with creative execution.
-                </p>
-
-                <div class="skills-grid">
-                    <div class="skill-category">
-                        <h3 data-en="Tools" data-de="Tools">TOOLS</h3>
-                        <ul>
-                            <li>Blender</li>
-                            <li>Adobe Creative Cloud</li>
-                            <li>Midjourney / AI Tools</li>
-                            <li>Python / MediaPipe</li>
-                            <li>Tilt Brush / VR</li>
-                        </ul>
-                    </div>
-                    <div class="skill-category">
-                        <h3 data-en="Skills" data-de="Fähigkeiten">SKILLS</h3>
-                        <ul>
-                            <li data-en="3D Modeling & Rendering" data-de="3D-Modellierung & Rendering">3D Modeling & Rendering</li>
-                            <li data-en="Motion Design" data-de="Motion Design">Motion Design</li>
-                            <li data-en="CAD Processing" data-de="CAD-Verarbeitung">CAD Processing</li>
-                            <li data-en="AI-Assisted Workflows" data-de="KI-gestützte Workflows">AI-Assisted Workflows</li>
-                            <li data-en="Real-time Systems" data-de="Echtzeitsysteme">Real-time Systems</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="container">
-        <div class="contact-info">
-            <h2 data-en="Let's Work Together" data-de="Lass uns zusammenarbeiten">Let's Work Together</h2>
+        <!-- Contact -->
+        <section id="contact">
+            <div class="section-label">Get in Touch</div>
             <div class="contact-links">
-                <a href="mailto:joshua.lieck@gmail.com" class="contact-link">joshua.lieck@gmail.com</a>
-                <a href="tel:+4915254596094" class="contact-link">+49 152 54596094</a>
+                <a href="mailto:joshua.lieck@gmail.com">joshua.lieck@gmail.com</a>
+                <a href="tel:+4915254596094">+49 152 54596094</a>
             </div>
-            <div class="barcode"></div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <!-- Footer -->
     <footer>
-        <p>© 2025 Joshua Lieck. <span data-en="All rights reserved." data-de="Alle Rechte vorbehalten.">All rights reserved.</span></p>
+        <p>© 2025 Joshua Lieck</p>
     </footer>
 
     <script>
@@ -602,7 +536,6 @@
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
 
-        // Check for saved theme preference or default to 'light'
         const currentTheme = localStorage.getItem('theme') || 'light';
         html.setAttribute('data-theme', currentTheme);
 
@@ -610,50 +543,6 @@
             const theme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
-        });
-
-        // Language Toggle
-        const langToggle = document.getElementById('langToggle');
-        let currentLang = localStorage.getItem('lang') || 'en';
-
-        function setLanguage(lang) {
-            currentLang = lang;
-            langToggle.textContent = lang === 'en' ? 'DE' : 'EN';
-
-            document.querySelectorAll('[data-en]').forEach(el => {
-                const text = el.getAttribute(`data-${lang}`);
-                if (text) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                        el.placeholder = text;
-                    } else {
-                        el.textContent = text;
-                    }
-                }
-            });
-
-            localStorage.setItem('lang', lang);
-            html.setAttribute('lang', lang);
-        }
-
-        langToggle.addEventListener('click', () => {
-            setLanguage(currentLang === 'en' ? 'de' : 'en');
-        });
-
-        // Initialize language
-        setLanguage(currentLang);
-
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
         });
     </script>
 </body>
