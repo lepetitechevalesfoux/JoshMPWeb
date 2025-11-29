@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playground — Movement as Interface — Joshua Lieck</title>
+    <style>
+        /* Einfach und funktioniert immer */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap');
+
+        body {
+            margin: 0;
+            background: #ffffff;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            height: 300vh;
+        }
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            padding: 12px 20px;
+            background: #000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .back-btn:hover {
+            opacity: 0.8;
+        }
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+        canvas { 
+            display: block; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .panel {
+            position: relative;
+            z-index: 2;
+            width: 80vw;
+            height: 60vh;
+            max-width: 800px;
+            margin: 100px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .panel:active {
+            transform: scale(0.98);
+        }
+        .panel h1 {
+            font-size: 5vw;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            margin: 0;
+            letter-spacing: 2px;
+            color: #000000;
+        }
+        
+        .panel:first-of-type {
+            height: 100vh;
+            margin: 0;
+            width: 100vw;
+            max-width: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .start-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            padding: 12px 20px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .start-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Mobile Optimierungen */
+        @media (max-width: 768px) {
+            .panel h1 {
+                font-size: 8vw;
+            }
+            .panel {
+                width: 90vw;
+                height: 50vh;
+                margin: 60px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Portfolio</a>
+
+    <canvas id="pose-canvas"></canvas>
+    <video id="webcam" 
+           playsinline 
+           webkit-playsinline 
+           muted 
+           autoplay
+           style="display: none;">
+    </video>
+    
+    <div class="panel" onclick="openBio()">
+        <h1>JOSHUA LIECK</h1>
+    </div>
+    
+    <div class="panel" onclick="openBio()">
+        <h1>JOSHUA LIECK</h1>
+    </div>
+    
+    <div class="panel" onclick="openBio()">
+        <h1>JOSHUA LIECK</h1>
+    </div>
+
+    <!-- MediaPipe -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+
+    <script>
+        // Bio3 öffnen Funktion
+        function openBio() {
+            window.location.href = 'bio3.html';
+        }
+
+        // Canvas Setup
+        const canvas = document.getElementById('pose-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Canvas-Größe anpassen und Hintergrund zeichnen
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Trail-System für verschiedene Körperteile mit Rot, Grün, Blau Farben
+        const colors = ['rgb(255, 0, 0)', 'rgb(0, 255, 0)', 'rgb(0, 0, 255)'];
+        const poseTrails = {
+            nose: { points: [], color: colors[0] },
+            leftShoulder: { points: [], color: colors[1] },
+            rightShoulder: { points: [], color: colors[2] },
+            leftElbow: { points: [], color: colors[0] },
+            rightElbow: { points: [], color: colors[1] },
+            leftWrist: { points: [], color: colors[2] },
+            rightWrist: { points: [], color: colors[0] },
+            leftHip: { points: [], color: colors[1] },
+            rightHip: { points: [], color: colors[2] },
+            leftKnee: { points: [], color: colors[0] },
+            rightKnee: { points: [], color: colors[1] },
+            leftAnkle: { points: [], color: colors[2] },
+            rightAnkle: { points: [], color: colors[0] }
+        };
+        
+        // Funktion für zufällige RGB-Farben
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+        // Detect iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // MediaPipe Pose Setup
+        const pose = new Pose({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+        });
+        
+        // iOS-optimierte Einstellungen
+        pose.setOptions({
+            modelComplexity: 0, // Lowest complexity for iOS
+            smoothLandmarks: false, // Disable for better iOS performance
+            enableSegmentation: false,
+            smoothSegmentation: false,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+        
+        pose.onResults((results) => {
+            if (results.poseLandmarks) {
+                const landmarks = results.poseLandmarks;
+                
+                updateTrail('nose', landmarks[0]);
+                updateTrail('leftShoulder', landmarks[11]);
+                updateTrail('rightShoulder', landmarks[12]);
+                updateTrail('leftElbow', landmarks[13]);
+                updateTrail('rightElbow', landmarks[14]);
+                updateTrail('leftWrist', landmarks[15]);
+                updateTrail('rightWrist', landmarks[16]);
+                updateTrail('leftHip', landmarks[23]);
+                updateTrail('rightHip', landmarks[24]);
+                updateTrail('leftKnee', landmarks[25]);
+                updateTrail('rightKnee', landmarks[26]);
+                updateTrail('leftAnkle', landmarks[27]);
+                updateTrail('rightAnkle', landmarks[28]);
+            }
+        });
+        
+        function updateTrail(trailName, landmark) {
+            if (landmark && landmark.visibility > 0.5) {
+                const x = landmark.x * canvas.width;
+                const y = landmark.y * canvas.height;
+                
+                poseTrails[trailName].points.push({x, y});
+                
+                if (poseTrails[trailName].points.length > 1) {
+                    const prevPoint = poseTrails[trailName].points[poseTrails[trailName].points.length - 2];
+                    const currPoint = poseTrails[trailName].points[poseTrails[trailName].points.length - 1];
+                    
+                    ctx.strokeStyle = poseTrails[trailName].color;
+                    ctx.lineWidth = isMobile ? 2 : 3;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(prevPoint.x, prevPoint.y);
+                    ctx.lineTo(currPoint.x, currPoint.y);
+                    ctx.stroke();
+                }
+            }
+        }
+        
+        // iOS-compatible camera initialization
+        const video = document.getElementById('webcam');
+        
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'user',
+                        width: { ideal: isIOS ? 320 : 640 },
+                        height: { ideal: isIOS ? 240 : 480 }
+                    },
+                    audio: false
+                });
+                
+                video.srcObject = stream;
+                video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
+                video.setAttribute('muted', '');
+                
+                // Wait for video to be ready
+                video.onloadedmetadata = () => {
+                    video.play();
+                    console.log('Video started');
+                    sendToMediaPipe();
+                };
+                
+            } catch(e) {
+                console.error('Camera failed:', e);
+                alert('Kamera-Zugriff verweigert oder nicht verfügbar');
+            }
+        }
+        
+        // Send video frames to MediaPipe
+        function sendToMediaPipe() {
+            if (video.readyState >= 2) {
+                pose.send({image: video})
+                    .then(() => {
+                        requestAnimationFrame(sendToMediaPipe);
+                    })
+                    .catch((e) => {
+                        console.error('MediaPipe error:', e);
+                        requestAnimationFrame(sendToMediaPipe);
+                    });
+            } else {
+                requestAnimationFrame(sendToMediaPipe);
+            }
+        }
+        
+        // iOS requires user interaction to start camera
+        if (isIOS) {
+            const startBtn = document.createElement('button');
+            startBtn.textContent = 'Start Tracking';
+            startBtn.className = 'start-button';
+            document.body.appendChild(startBtn);
+            
+            startBtn.onclick = () => {
+                startCamera();
+                startBtn.remove();
+            };
+        } else {
+            // Auto-start on non-iOS devices
+            startCamera();
+        }
+        
+        // Canvas leeren mit 'c' Taste
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'c' || e.key === 'C') {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                for (const trailName in poseTrails) {
+                    poseTrails[trailName].points = [];
+                }
+            }
+        });
+        
+        // Touch-optimiertes Scrolling
+        let lastScrollY = window.scrollY;
+        let isScrolling = false;
+        
+        function handleScroll() {
+            if (isScrolling) return;
+            isScrolling = true;
+            
+            const currentScrollY = window.scrollY;
+            const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+            const scrollDistance = Math.abs(currentScrollY - lastScrollY);
+            
+            for (const trailName in poseTrails) {
+                const trail = poseTrails[trailName];
+                if (trail.points.length > 0) {
+                    const lastPoint = trail.points[trail.points.length - 1];
+                    
+                    ctx.strokeStyle = trail.color;
+                    ctx.lineWidth = isMobile ? 2 : 3;
+                    ctx.lineCap = 'round';
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(lastPoint.x, lastPoint.y);
+                    
+                    if (scrollDirection === 'down') {
+                        ctx.lineTo(lastPoint.x, lastPoint.y + scrollDistance);
+                    } else {
+                        ctx.lineTo(lastPoint.x, lastPoint.y - scrollDistance);
+                    }
+                    
+                    ctx.stroke();
+                    
+                    if (scrollDirection === 'down') {
+                        lastPoint.y += scrollDistance;
+                    } else {
+                        lastPoint.y -= scrollDistance;
+                    }
+                }
+            }
+            
+            lastScrollY = currentScrollY;
+            
+            setTimeout(() => {
+                isScrolling = false;
+            }, isMobile ? 50 : 16);
+        }
+        
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // Touch-Events für Mobile
+        if (isMobile) {
+            let touchStartY = 0;
+            let touchStartTime = 0;
+            
+            document.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
+            }, { passive: true });
+            
+            document.addEventListener('touchend', (e) => {
+                const touchEndY = e.changedTouches[0].clientY;
+                const touchEndTime = Date.now();
+                const touchDuration = touchEndTime - touchStartTime;
+                
+                if (touchDuration < 300 && Math.abs(touchEndY - touchStartY) < 10) {
+                    const clickedElement = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+                    if (clickedElement && clickedElement.closest('.panel')) {
+                        openBio();
+                    }
+                }
+            }, { passive: true });
+        }
+    </script>
+    
+    <script>
+        // Zufällige Farben für Joshua Lieck Panels beim Laden
+        function randomColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+        
+        window.addEventListener('load', () => {
+            const panels = document.querySelectorAll('.panel');
+            panels.forEach(panel => {
+                panel.style.color = randomColor();
+            });
+            if (panels.length > 0) {
+                sessionStorage.setItem('nameColor', panels[0].style.color);
+            }
+        });
+    </script>
+    
+    <script>
+        // Unendliche Panels mit zufälligen Farben hinzufügen
+        function createPanel() {
+            const panel = document.createElement('div');
+            panel.className = 'panel';
+            panel.style.color = randomColor();
+            
+            // Alle Panels führen zur Bio
+            panel.onclick = openBio;
+            
+            const h1 = document.createElement('h1');
+            h1.textContent = 'JOSHUA LIECK';
+            panel.appendChild(h1);
+            
+            return panel;
+        }
+
+        let isAppending = false;
+        function maybeAppendPanels() {
+            if (isAppending) return;
+            const nearBottom = window.scrollY + window.innerHeight > document.documentElement.scrollHeight - 800;
+            if (!nearBottom) return;
+            isAppending = true;
+            for (let i = 0; i < 5; i += 1) {
+                document.body.appendChild(createPanel());
+            }
+            isAppending = false;
+        }
+
+        window.addEventListener('scroll', maybeAppendPanels);
+        window.addEventListener('load', () => {
+            for (let i = 0; i < 3; i += 1) document.body.appendChild(createPanel());
+        });
+    </script>
+</body>
+</html>
