@@ -19,16 +19,9 @@
             overflow: hidden;
         }
 
-        .container {
-            position: relative;
+        model-viewer {
             width: 100vw;
             height: 100vh;
-            background: #000;
-        }
-
-        model-viewer {
-            width: 100%;
-            height: 100%;
             background: #000;
             --poster-color: #000;
         }
@@ -36,27 +29,28 @@
 </head>
 
 <body>
-    
-    <div class="container">
-        <model-viewer 
-            src="model.glb"
-            alt="Joshua M. Lieck"
-            camera-controls
-            interaction-prompt="none"
-            shadow-intensity="0.6"
-            exposure="1.1"
 
-            <!-- Kamera näher = Modell größer (~150%) -->
-            camera-orbit="0deg 75deg 6.5m"
-            camera-target="0m 0m 0m"
+<model-viewer
+    src="model.glb"
+    alt="Joshua M. Lieck"
 
-            min-camera-orbit="-45deg 60deg 6.5m"
-            max-camera-orbit="45deg 90deg 6.5m"
+    camera-controls
+    interaction-prompt="none"
+    disable-zoom
 
-            field-of-view="25deg"
-            disable-zoom>
-        </model-viewer>
-    </div>
+    shadow-intensity="0.7"
+    exposure="1.15"
+
+    <!-- Kamera: hoch + nah -->
+    camera-orbit="0deg 82deg 3.5m"
+    camera-target="0m 0m 0m"
+
+    <!-- NUR vertikale Rotation -->
+    min-camera-orbit="-180deg 82deg 3.5m"
+    max-camera-orbit="180deg 82deg 3.5m"
+
+    field-of-view="25deg">
+</model-viewer>
 
 </body>
 </html>
