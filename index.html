@@ -3,81 +3,240 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stromkasten</title>
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+  <title>Handpaint</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #fff; }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #ffffff;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
+    #three-canvas { width: 100%; height: 100vh; display: block; }
 
-    model-viewer {
-      width: 100%;
-      height: 100vh;
-      --poster-color: transparent;
-      outline: none;
-    }
-
-    model-viewer::part(default-progress-bar) {
-      background: #222;
-      height: 3px;
-    }
-
-    .controls-hint {
+    #cam-wrap {
       position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #999;
-      font-size: 13px;
-      letter-spacing: 0.02em;
-      pointer-events: none;
-      transition: opacity 0.6s ease;
-      opacity: 1;
+      top: 16px;
+      left: 16px;
+      width: 160px;
+      height: 120px;
+      border-radius: 8px;
+      overflow: hidden;
+      z-index: 10;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
     }
 
-    .controls-hint.hidden {
-      opacity: 0;
+    #webcam, #overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      transform: scaleX(-1);
     }
+
+    #webcam { object-fit: cover; }
+    #overlay { pointer-events: none; }
   </style>
 </head>
 <body>
 
-  <model-viewer
-    id="viewer"
-    src="model.glb"
-    alt="Stromkasten 3D Model"
-    camera-controls
-    touch-action="none"
-    disable-zoom="false"
-    min-camera-orbit="auto auto auto"
-    max-camera-orbit="Infinity Infinity Infinity"
-    min-field-of-view="10deg"
-    max-field-of-view="120deg"
-    camera-orbit="30deg 75deg auto"
-    interaction-prompt="none"
-    shadow-intensity="0"
-    exposure="1"
-  ></model-viewer>
+  <canvas id="three-canvas"></canvas>
 
-  <div class="controls-hint" id="hint">Drag · Scroll · Pinch</div>
+  <div id="cam-wrap">
+    <video id="webcam" autoplay playsinline></video>
+    <canvas id="overlay"></canvas>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 
   <script>
-    const viewer = document.getElementById('viewer');
-    const hint = document.getElementById('hint');
+    const TEX_SIZE = 1024;
+    const BRUSH_R = 14;
+    const PAINT_COLOR = '#ff3333';
 
-    viewer.addEventListener('camera-change', () => {
-      hint.classList.add('hidden');
-    }, { once: true });
+    // ─── Paint Texture ───
+    const paintCanvas = document.createElement('canvas');
+    paintCanvas.width = TEX_SIZE;
+    paintCanvas.height = TEX_SIZE;
+    const paintCtx = paintCanvas.getContext('2d');
+    paintCtx.fillStyle = '#e8e8e8';
+    paintCtx.fillRect(0, 0, TEX_SIZE, TEX_SIZE);
+
+    // ─── Three.js ───
+    const canvas3d = document.getElementById('three-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas3d, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0xffffff, 1);
+
+    const scene = new THREE.Scene();
+    const cam3d = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+    cam3d.position.set(0, 0, 3.5);
+
+    const paintTexture = new THREE.CanvasTexture(paintCanvas);
+    const sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 64, 64),
+      new THREE.MeshStandardMaterial({ map: paintTexture, roughness: 0.35, metalness: 0.05 })
+    );
+    scene.add(sphere);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+    dl.position.set(3, 4, 5);
+    scene.add(dl);
+
+    const raycaster = new THREE.Raycaster();
+    const pv = new THREE.Vector2();
+
+    // ─── Orbit (Shift+Drag / Right-click) ───
+    let orbiting = false, prev = { x: 0, y: 0 };
+    canvas3d.addEventListener('mousedown', e => {
+      if (e.shiftKey || e.button === 2) { orbiting = true; prev = { x: e.clientX, y: e.clientY }; e.preventDefault(); }
+    });
+    canvas3d.addEventListener('contextmenu', e => e.preventDefault());
+    window.addEventListener('mouseup', () => { orbiting = false; });
+    canvas3d.addEventListener('mousemove', e => {
+      if (!orbiting) return;
+      sphere.rotation.y += (e.clientX - prev.x) * 0.005;
+      sphere.rotation.x += (e.clientY - prev.y) * 0.005;
+      prev = { x: e.clientX, y: e.clientY };
+    });
+    canvas3d.addEventListener('wheel', e => {
+      cam3d.position.z = Math.max(1.5, Math.min(8, cam3d.position.z + e.deltaY * 0.005));
+    });
+
+    window.addEventListener('resize', () => {
+      cam3d.aspect = window.innerWidth / window.innerHeight;
+      cam3d.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // ─── Paint ───
+    let lastUV = null;
+
+    function paintAtUV(uv) {
+      const x = uv.x * TEX_SIZE, y = (1 - uv.y) * TEX_SIZE;
+      paintCtx.globalAlpha = 0.7;
+      paintCtx.fillStyle = PAINT_COLOR;
+      paintCtx.beginPath();
+      paintCtx.arc(x, y, BRUSH_R, 0, Math.PI * 2);
+      paintCtx.fill();
+      if (lastUV) {
+        const lx = lastUV.x * TEX_SIZE, ly = (1 - lastUV.y) * TEX_SIZE;
+        const steps = Math.ceil(Math.hypot(x - lx, y - ly) / (BRUSH_R * 0.4));
+        for (let i = 1; i < steps; i++) {
+          const t = i / steps;
+          paintCtx.beginPath();
+          paintCtx.arc(lx + (x - lx) * t, ly + (y - ly) * t, BRUSH_R, 0, Math.PI * 2);
+          paintCtx.fill();
+        }
+      }
+      paintCtx.globalAlpha = 1;
+      paintTexture.needsUpdate = true;
+      lastUV = { x: uv.x, y: uv.y };
+    }
+
+    function tryPaint(sx, sy) {
+      pv.x = (sx / window.innerWidth) * 2 - 1;
+      pv.y = -(sy / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(pv, cam3d);
+      const h = raycaster.intersectObject(sphere);
+      if (h.length > 0) { paintAtUV(h[0].uv); return true; }
+      lastUV = null;
+      return false;
+    }
+
+    // ─── Mouse Paint ───
+    let mp = false;
+    canvas3d.addEventListener('mousedown', e => {
+      if (e.button === 0 && !e.shiftKey && tryPaint(e.clientX, e.clientY)) mp = true;
+    });
+    canvas3d.addEventListener('mousemove', e => { if (mp) tryPaint(e.clientX, e.clientY); });
+    window.addEventListener('mouseup', () => { mp = false; lastUV = null; });
+
+    // ─── Hand Overlay ───
+    const video = document.getElementById('webcam');
+    const overlay = document.getElementById('overlay');
+    const olCtx = overlay.getContext('2d');
+
+    const HAND_CONNECTIONS = [
+      [0,1],[1,2],[2,3],[3,4],
+      [0,5],[5,6],[6,7],[7,8],
+      [5,9],[9,10],[10,11],[11,12],
+      [9,13],[13,14],[14,15],[15,16],
+      [13,17],[17,18],[18,19],[19,20],[0,17]
+    ];
+
+    function drawHand(landmarks) {
+      const w = overlay.width, h = overlay.height;
+      olCtx.clearRect(0, 0, w, h);
+
+      // connections
+      olCtx.strokeStyle = 'rgba(255,255,255,0.6)';
+      olCtx.lineWidth = 1.5;
+      for (const [a, b] of HAND_CONNECTIONS) {
+        olCtx.beginPath();
+        olCtx.moveTo(landmarks[a].x * w, landmarks[a].y * h);
+        olCtx.lineTo(landmarks[b].x * w, landmarks[b].y * h);
+        olCtx.stroke();
+      }
+
+      // joints
+      for (const lm of landmarks) {
+        olCtx.fillStyle = 'rgba(255,60,60,0.8)';
+        olCtx.beginPath();
+        olCtx.arc(lm.x * w, lm.y * h, 2.5, 0, Math.PI * 2);
+        olCtx.fill();
+      }
+    }
+
+    // ─── MediaPipe ───
+    const hands = new Hands({
+      locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
+    });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.5 });
+
+    hands.onResults(r => {
+      if (r.multiHandLandmarks && r.multiHandLandmarks.length > 0) {
+        const lm = r.multiHandLandmarks[0];
+        drawHand(lm);
+
+        const idx = lm[8], thm = lm[4];
+        const sx = (1 - idx.x) * window.innerWidth;
+        const sy = idx.y * window.innerHeight;
+
+        if (Math.hypot(idx.x - thm.x, idx.y - thm.y) < 0.06) {
+          tryPaint(sx, sy);
+        } else {
+          lastUV = null;
+        }
+      } else {
+        olCtx.clearRect(0, 0, overlay.width, overlay.height);
+        lastUV = null;
+      }
+    });
+
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+        video.srcObject = stream;
+        await video.play();
+        overlay.width = 640;
+        overlay.height = 480;
+
+        const cam = new Camera(video, {
+          onFrame: async () => { await hands.send({ image: video }); },
+          width: 640, height: 480
+        });
+        cam.start();
+      } catch (err) {
+        document.getElementById('cam-wrap').style.display = 'none';
+      }
+    }
+
+    (function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, cam3d);
+    })();
+
+    startCamera();
   </script>
 
 </body>
