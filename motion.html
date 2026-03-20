@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motion — Joshua Lieck</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #0a0a0a;
+      color: #e8e8e8;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 80px 32px 120px;
+    }
+
+    .project {
+      margin-bottom: 72px;
+    }
+
+    .project:last-child {
+      margin-bottom: 0;
+    }
+
+    .project-title {
+      font-size: 15px;
+      font-weight: 400;
+      color: #999;
+      margin-bottom: 12px;
+      letter-spacing: 0.01em;
+    }
+
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #111;
+      overflow: hidden;
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-size: 13px;
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 60px 20px 80px;
+      }
+      .project {
+        margin-bottom: 56px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <div class="project">
+      <p class="project-title">Morph Walk</p>
+      <div class="video-wrap">
+        <iframe src="https://player.vimeo.com/video/1174770543?badge=0&autopause=0&player_id=0&background=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="project">
+      <p class="project-title">Cloth Reveal</p>
+      <div class="video-wrap">
+        <iframe src="https://player.vimeo.com/video/1174768476?badge=0&autopause=0&player_id=0&background=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="project">
+      <p class="project-title">TouchDesigner</p>
+      <div class="video-wrap">
+        <iframe src="https://player.vimeo.com/video/1175443702?badge=0&autopause=0&player_id=0&background=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="project">
+      <p class="project-title">Möbel Xplode</p>
+      <div class="video-wrap">
+        <iframe src="https://player.vimeo.com/video/1174770195?badge=0&autopause=0&player_id=0&background=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="project">
+      <p class="project-title">Möbel 360</p>
+      <div class="video-wrap">
+        <iframe src="https://player.vimeo.com/video/1175489605?badge=0&autopause=0&player_id=0&background=0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
